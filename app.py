@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import os
 import untangle
 import requests
@@ -24,13 +24,15 @@ def address_validate_request(address, city, state, zipcode):
     params = {'API': api, 'XML': xml}
     response = requests.get(url, params=params).text
     parsedxml = untangle.parse(response)
-    # if obj.ERROR
-    # verifiedaddress = parsedxml.children[0].children
-    # verifiedcity =
-    # verifiedstate =
-    # verifiedzip =
-    print(parsedxml.children[0], 'did we makkkkkeeeeeee it')
-    return "http/json response with correct address for react fetch"
+    try:
+        verifiedaddress = parsedxml.children[0].children[0].Address2.cdata
+        verifiedcity = parsedxml.children[0].children[0].City.cdata
+        verifiedstate = parsedxml.children[0].children[0].State.cdata
+        verifiedzip = parsedxml.children[0].children[0].Zip5.cdata
+        return jsonify(verifiedaddress=verifiedaddress, verifiedcity=verifiedcity, verifiedstate=verifiedstate, verifiedzip=verifiedzip)
+    except:
+        error = parsedxml.children[0].children[0].Error.Description.cdata
+        return jsonify(error=error)
 
 
 def zip_code_lookup_request(address, city, state, zipcode):
@@ -49,11 +51,13 @@ def zip_code_lookup_request(address, city, state, zipcode):
     params = {'API': api, 'XML': xml}
     response = requests.get(url, params=params).text
     parsedxml = untangle.parse(response)
-    # if obj.ERROR
-    # zip5=
-    # zip4=
-    print(parsedxml.children[0], 'did we makkkkkeeeeeee it')
-    return "http/json response with whole zip code for verified address"
+    try:
+        zip5 = parsedxml.children[0].children[0].Zip5.cdata
+        zip4 = parsedxml.children[0].children[0].Zip4.cdata
+        return jsonify(zip5=zip5, zip4=zip4)
+    except:
+        error = parsedxml.children[0].children[0].Error.Description.cdata
+        return jsonify(error=error)
 
 
 def city_state_lookup_request(zipcode):
@@ -67,24 +71,31 @@ def city_state_lookup_request(zipcode):
     params = {'API': api, 'XML': xml}
     response = requests.get(url, params=params).text
     parsedxml = untangle.parse(response)
-    # if obj.ERROR
-    # city=
-    # state=
-    print(parsedxml.children[0].children[0].children,
-          'did we makkkkkeeeeeee it')
-    return "http/json response with city state for zip code"
+    try:
+        city = parsedxml.children[0].children[0].City.cdata
+        state = parsedxml.children[0].children[0].State.cdata,
+        return jsonify(city=city, state=state)
+    except:
+        error = parsedxml.children[0].children[0].Error.Description.cdata
+        return jsonify(error=error)
 
 
 @app.route('/verify')
 def verify():
-    # address = request.args.get('address')
-    return address_validate_request(address)
+    address = request.args.get('address')
+    city = request.args.get('city')
+    state = request.args.get('state')
+    zipcode = request.args.get('zipcode')
+    return address_validate_request(address, city, state, zipcode)
 
 
 @app.route('/zipcode')
 def zipcode():
-    # address = request.args.get('address')
-    return zip_code_lookup_request(address)
+    address = request.args.get('address')
+    city = request.args.get('city')
+    state = request.args.get('state')
+    zipcode = request.args.get('zipcode')
+    return zip_code_lookup_request(address, city, state, zipcode)
 
 
 @app.route('/citystate')
