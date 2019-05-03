@@ -73,11 +73,11 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          Add New Address:
+          <h1>Add New Address:</h1>
           <Form onSubmit={data => this.createEntry(data)} />
         </header>
         <main className="App-main">
-          Address Book:
+          <h1>Address Book:</h1>
           <Search searchBy={(value, type) => this.searchBy(value, type)} />
           {existingAddressBook &&
             !searchView &&
