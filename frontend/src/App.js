@@ -3,7 +3,7 @@ import './App.css';
 import Form from './Form/Form';
 import Search from './Search/Search';
 import Card from './Card/Card';
-import { verifyEntry } from './requests/requests';
+import { verifyEntry, getZipCode } from './requests/requests';
 
 class App extends Component {
   constructor(props) {
@@ -46,7 +46,8 @@ class App extends Component {
     entry.address = verified.verifiedaddress;
     entry.city = verified.verifiedcity;
     entry.state = verified.verifiedstate;
-    entry.zipcode = verified.verifiedzip;
+    const zipcode = await getZipCode(data);
+    entry.zipcode = zipcode.zip5 + '-' + zipcode.zip4;
     if (!addresses) {
       localStorage.setItem('Addresses', JSON.stringify([entry]));
       this.setState({ existingAddressBook: true, addresses: [entry] });
@@ -72,11 +73,11 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          Add New Address:
+          <h1>Add New Address:</h1>
           <Form onSubmit={data => this.createEntry(data)} />
         </header>
         <main className="App-main">
-          Address Book:
+          <h1>Address Book:</h1>
           <Search searchBy={(value, type) => this.searchBy(value, type)} />
           {existingAddressBook &&
             !searchView &&
