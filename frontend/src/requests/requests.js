@@ -3,40 +3,39 @@ const hostUrl =
     ? process.env.REACT_APP_PROD_API_URL
     : 'http://localhost:5000';
 
-
 async function verifyEntry(data) {
-    const {address, city, state, zipcode} = data 
-    let url = `${hostUrl}/verify?address=${address}&city=${city}&state=${state}&zipcode=${zipcode}`
-    url = url.replace(/#/g, '%23');
-    const response = await fetch(url, {
-        accept: 'application/json',
-    });
+  const { address, city, state, zipcode } = data;
+  let url = `${hostUrl}/verify?address=${address}&city=${city}&state=${state}&zipcode=${zipcode}`;
+  url = url.replace(/#/g, '%23');
+  const response = await fetch(url, {
+    accept: 'application/json',
+  });
   const checkedStatus = checkStatus(response);
   const parsedJson = await parseJSON(checkedStatus);
   return parsedJson;
 }
 
 async function getCityState(data) {
-    const {zipcode} = data
-    const response = await fetch(`${hostUrl}/citystate?zipcode=${zipcode}`, {
-      accept: 'application/json',
-    });
-    const checkedStatus = checkStatus(response);
-    const parsedJson = await parseJSON(checkedStatus);
-    return parsedJson;
-  }
+  const { zipcode } = data;
+  const response = await fetch(`${hostUrl}/citystate?zipcode=${zipcode}`, {
+    accept: 'application/json',
+  });
+  const checkedStatus = checkStatus(response);
+  const parsedJson = await parseJSON(checkedStatus);
+  return parsedJson;
+}
 
-  async function getZipCode(data) {
-    const {address, city, state, zipcode} = data
-    let url = `${hostUrl}/zipcode?address=${address}&city=${city}&state=${state}&zipcode=${zipcode}`
-    url = url.replace(/#/g, '%23');
-    const response = await fetch(url, {
-        accept: 'application/json',
-      });
-    const checkedStatus = checkStatus(response);
-    const parsedJson = await parseJSON(checkedStatus);
-    return parsedJson;
-  }
+async function getZipCode(data) {
+  const { address, city, state, zipcode } = data;
+  let url = `${hostUrl}/zipcode?address=${address}&city=${city}&state=${state}&zipcode=${zipcode}`;
+  url = url.replace(/#/g, '%23');
+  const response = await fetch(url, {
+    accept: 'application/json',
+  });
+  const checkedStatus = checkStatus(response);
+  const parsedJson = await parseJSON(checkedStatus);
+  return parsedJson;
+}
 
 function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
@@ -53,8 +52,4 @@ async function parseJSON(response) {
   return response.json();
 }
 
-export {
-  getCityState,
-  getZipCode,
-  verifyEntry
-};
+export { getCityState, getZipCode, verifyEntry };
