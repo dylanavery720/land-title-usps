@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 import os
 import untangle
 import requests
@@ -23,7 +23,7 @@ def address_validate_request(address, city, state, zipcode):
 </AddressValidateRequest>'''
     params = {'API': api, 'XML': xml}
     response = requests.get(url, params=params).text
-    parsedxml = untangle.parse(resource)
+    parsedxml = untangle.parse(response)
     # if obj.ERROR
     # verifiedaddress = parsedxml.children[0].children
     # verifiedcity =
@@ -48,7 +48,7 @@ def zip_code_lookup_request(address, city, state, zipcode):
 </ZipCodeLookupRequest>'''
     params = {'API': api, 'XML': xml}
     response = requests.get(url, params=params).text
-    parsedxml = untangle.parse(resource)
+    parsedxml = untangle.parse(response)
     # if obj.ERROR
     # zip5=
     # zip4=
@@ -66,11 +66,12 @@ def city_state_lookup_request(zipcode):
 </CityStateLookupRequest>'''
     params = {'API': api, 'XML': xml}
     response = requests.get(url, params=params).text
-    parsedxml = untangle.parse(resource)
+    parsedxml = untangle.parse(response)
     # if obj.ERROR
     # city=
     # state=
-    print(parsedxml.children[0], 'did we makkkkkeeeeeee it')
+    print(parsedxml.children[0].children[0].children,
+          'did we makkkkkeeeeeee it')
     return "http/json response with city state for zip code"
 
 
@@ -88,5 +89,5 @@ def zipcode():
 
 @app.route('/citystate')
 def citystate():
-    # address = request.args.get('address')
-    return city_state_lookup_request(address)
+    zipcode = request.args.get('zipcode')
+    return city_state_lookup_request(zipcode)
