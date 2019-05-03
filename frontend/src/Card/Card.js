@@ -16,14 +16,30 @@ class Card extends Component {
     return (
       <div className="Card-container">
         <div className="Card">
-          <p>First Name: {firstname}</p>
-          <p>Last Name: {lastname}</p>
-          <p>Phone Number: {phone}</p>
-          <p>Email: {email}</p>
-          <p>Address: {address}</p>
-          <p>City: {city}</p>
-          <p>State: {state}</p>
-          <p>Zipcode: {zipcode}</p>
+          <p>
+            <b>First Name:</b> {firstname}
+          </p>
+          <p>
+            <b>Last Name:</b> {lastname}
+          </p>
+          <p>
+            <b>Phone Number:</b> {phone}
+          </p>
+          <p>
+            <b>Email:</b> {email}
+          </p>
+          <p>
+            <b>Address:</b> {address}
+          </p>
+          <p>
+            <b>City:</b> {city}
+          </p>
+          <p>
+            <b>State:</b> {state}
+          </p>
+          <p>
+            <b>Zipcode:</b> {zipcode}
+          </p>
         </div>
       </div>
     );
