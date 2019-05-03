@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
 import './App.css';
-import Form from './Form/Form'
-import Card from './Card/Card'
-import { verifyEntry } from './requests/requests'
-
-
+import Form from './Form/Form';
+import Card from './Card/Card';
+import { verifyEntry } from './requests/requests';
 
 class App extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -17,38 +14,39 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const addresses = JSON.parse(localStorage.getItem('Addresses'))
-    if(addresses) {
-      this.setState({existingAddressBook: true, addresses})
-    } 
+    const addresses = JSON.parse(localStorage.getItem('Addresses'));
+    if (addresses) {
+      this.setState({ existingAddressBook: true, addresses });
+    }
   }
 
-
   async createEntry(data) {
-    let addresses = JSON.parse(localStorage.getItem('Addresses')) || undefined
-    let entry = {firstname: data.firstname, lastname: data.lastname, phone: data.phone, email: data.email}
-    const verified =  await verifyEntry(data)
-    if (verified.error) throw new Error(verified.error)
-    entry.address = verified.verifiedaddress
-    entry.city = verified.verifiedcity
-    entry.state = verified.verifiedstate
-    entry.zipcode = verified.verifiedzip
-    if(!addresses) {
-      localStorage.setItem('Addresses', JSON.stringify([entry]))
-      this.setState({existingAddressBook: true, addresses: [entry]})
+    let addresses = JSON.parse(localStorage.getItem('Addresses')) || undefined;
+    let entry = {
+      firstname: data.firstname,
+      lastname: data.lastname,
+      phone: data.phone,
+      email: data.email,
+    };
+    const verified = await verifyEntry(data);
+    if (verified.error) throw new Error(verified.error);
+    entry.address = verified.verifiedaddress;
+    entry.city = verified.verifiedcity;
+    entry.state = verified.verifiedstate;
+    entry.zipcode = verified.verifiedzip;
+    if (!addresses) {
+      localStorage.setItem('Addresses', JSON.stringify([entry]));
+      this.setState({ existingAddressBook: true, addresses: [entry] });
     } else {
-      addresses.push(entry)
-      localStorage.setItem('Addresses', JSON.stringify(addresses))
-      this.setState({existingAddressBook: true, addresses})
+      addresses.push(entry);
+      localStorage.setItem('Addresses', JSON.stringify(addresses));
+      this.setState({ existingAddressBook: true, addresses });
     }
   }
 
   renderAddressBook() {
     const cards = this.state.addresses.map(address => (
-      <Card
-        // key={address.id}
-        address={address}
-      />
+      <Card address={address} />
     ));
     return cards;
   }
