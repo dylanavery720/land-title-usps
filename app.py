@@ -2,7 +2,11 @@ from flask import Flask, request, jsonify
 import os
 import untangle
 import requests
+from flask_cors import CORS
+
 app = Flask(__name__)
+CORS(app)
+
 USERID = os.getenv("USPS_USERID")
 PASSWORD = os.getenv("USPS_PASSWORD")
 
@@ -21,6 +25,7 @@ def address_validate_request(address, city, state, zipcode):
     <Zip4></Zip4>
   </Address>
 </AddressValidateRequest>'''
+    print(xml, 'xxxxmmmlll')
     params = {'API': api, 'XML': xml}
     response = requests.get(url, params=params).text
     parsedxml = untangle.parse(response)
