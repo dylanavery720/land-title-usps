@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import Form from './Form/Form';
+import Search from './Search/Search';
 import Card from './Card/Card';
 import { verifyEntry } from './requests/requests';
 
@@ -10,6 +11,8 @@ class App extends Component {
     this.state = {
       addresses: [],
       existingAddressBook: false,
+      searchedAddresses: [],
+      searchView: false,
     };
   }
 
@@ -18,6 +21,16 @@ class App extends Component {
     if (addresses) {
       this.setState({ existingAddressBook: true, addresses });
     }
+  }
+
+  searchBy(value, type) {
+    const addresses = this.state.addresses.filter(address =>
+      address[type].toUpperCase().includes(value.toUpperCase()),
+    );
+    this.setState({
+      searchView: true,
+      searchedAddresses: addresses,
+    });
   }
 
   async createEntry(data) {
@@ -44,14 +57,18 @@ class App extends Component {
     }
   }
 
-  renderAddressBook() {
-    const cards = this.state.addresses.map(address => (
-      <Card address={address} />
-    ));
+  renderAddressBook(addresses) {
+    const cards = addresses.map(address => <Card address={address} />);
     return cards;
   }
 
   render() {
+    const {
+      searchView,
+      searchedAddresses,
+      existingAddressBook,
+      addresses,
+    } = this.state;
     return (
       <div className="App">
         <header className="App-header">
@@ -60,7 +77,11 @@ class App extends Component {
         </header>
         <main className="App-main">
           Address Book:
-          {this.state.existingAddressBook && this.renderAddressBook()}
+          <Search searchBy={(value, type) => this.searchBy(value, type)} />
+          {existingAddressBook &&
+            !searchView &&
+            this.renderAddressBook(addresses)}
+          {searchView && this.renderAddressBook(searchedAddresses)}
         </main>
       </div>
     );
